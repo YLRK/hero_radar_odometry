@@ -38,22 +38,22 @@ class SoftmaxRefMatcher(nn.Module):
         src_desc_unrolled = F.normalize(src_desc_dense.view(B, encoder_dim, -1), dim=1)  # B x C x HW
         # build pseudo_coords
         pseudo_coords = torch.zeros((B * (self.window_size - 1), n_points, 2),
-                                    device=self.gpuid)  # B*(window - 1) x N x 2
+                                    device=self.gpuid)  # B*(window - 1) x N x 2 B*(window - 1)*400*2
         tgt_ids = torch.zeros(B * (self.window_size - 1), dtype=torch.int64, device=self.gpuid)    # B*(window - 1)
         src_ids = torch.zeros(B * (self.window_size - 1), dtype=torch.int64, device=self.gpuid)    # B*(window - 1)
         # loop for each batch
         if not self.sparse:
             for i in range(B):
-                win_ids = torch.arange(i * self.window_size + 1, i * self.window_size + self.window_size).to(self.gpuid)
-                tgt_desc = keypoint_desc[win_ids]  # (window - 1) x C x N
+                win_ids = torch.arange(i * self.window_size + 1, i * self.window_size + self.window_size).to(self.gpuid) # (window - 1) (1,2)
+                tgt_desc = keypoint_desc[win_ids]  # (window - 1) x C x N (window - 1) * 248 * 400
                 tgt_desc = F.normalize(tgt_desc, dim=1)
-                match_vals = torch.matmul(tgt_desc.transpose(2, 1), src_desc_unrolled[i:i+1])  # (window - 1) x N x HW
-                soft_match_vals = F.softmax(match_vals / self.softmax_temp, dim=2)  # (window - 1) x N x HW
-                pseudo_ids = torch.arange(i * (self.window_size - 1), i * (self.window_size - 1) + self.window_size - 1)
+                match_vals = torch.matmul(tgt_desc.transpose(2, 1), src_desc_unrolled[i:i+1])  # (window - 1) x N x HW 
+                soft_match_vals = F.softmax(match_vals / self.softmax_temp, dim=2)  # (window - 1) x N x HW (window - 1) * 400 * 409600
+                pseudo_ids = torch.arange(i * (self.window_size - 1), i * (self.window_size - 1) + self.window_size - 1) # (0,1)
                 pseudo_coords[pseudo_ids] = torch.matmul(self.src_coords_dense.transpose(2, 1),
                                                          soft_match_vals.transpose(2, 1)).transpose(2, 1)  # (w-1)xNx2
-                tgt_ids[pseudo_ids] = win_ids
-                src_ids[pseudo_ids] = i * self.window_size
+                tgt_ids[pseudo_ids] = win_ids # (1,2)
+                src_ids[pseudo_ids] = i * self.window_size # (0,0)
         else:
             for i in range(B):
                 win_ids = torch.arange(i * self.window_size + 1, i * self.window_size + self.window_size).to(self.gpuid)

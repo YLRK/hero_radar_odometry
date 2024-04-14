@@ -156,6 +156,10 @@ class SteamMonitor(MonitorBase):
         self.writer.add_image('val/score_img/{}'.format(batchi), score_img, global_step=self.counter)
         self.writer.add_image('val/match_img/{}'.format(batchi), match_img, global_step=self.counter)
         self.writer.add_image('val/error_img/{}'.format(batchi), error_img, global_step=self.counter)
+        self.writer.add_mesh(f'valtgt/{batchi}', out['tgt'], global_step=self.counter)
+        self.writer.add_mesh(f'valsrc/{batchi}', out['src'], global_step=self.counter)
+        self.writer.add_mesh(f'valtgt_rc/{batchi}', out['tgt_rc'], global_step=self.counter)
+        self.writer.add_mesh(f'valsrc_rc/{batchi}', out['src_rc'], global_step=self.counter)
 
     def validation(self):
         """This function will compute loss, median errors, KITTI metrics, and draw visualizations."""

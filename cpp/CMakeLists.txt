@@ -19,6 +19,7 @@ find_package(Boost COMPONENTS
     numpy${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}
     system
 )
+# find_package(Boost COMPONENTS python38 numpy38 system)
 find_package(PythonInterp 3)
 find_package(PythonLibs 3 REQUIRED)
 
@@ -30,7 +31,7 @@ find_package(PythonLibs 3 REQUIRED)
 find_package(Steam REQUIRED)
 
 # opencv
-find_package(OpenCV 3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 # boost python
 ENABLE_TESTING()

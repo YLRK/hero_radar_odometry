@@ -13,6 +13,8 @@ from utils.utils import computeMedianError, computeKittiMetrics, save_in_yeti_fo
 from utils.utils import get_transform2
 from utils.vis import plot_sequences, draw_matches
 
+import torch.multiprocessing
+torch.multiprocessing.set_sharing_strategy('file_system')
 torch.backends.cudnn.benchmark = False
 torch.backends.cudnn.enabled = True
 torch.backends.cudnn.deterministic = True
@@ -25,7 +27,7 @@ def get_folder_from_file_path(path):
     return newpath
 
 if __name__ == '__main__':
-    torch.set_num_threads(8)
+    # torch.set_num_threads(8)
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', default='config/steam.json', type=str, help='config file path')
     parser.add_argument('--pretrain', default=None, type=str, help='pretrain checkpoint path')

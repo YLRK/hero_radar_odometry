@@ -33,8 +33,8 @@ class HERO(torch.nn.Module):
         timestamps = batch['timestamps']
         t_ref = batch['t_ref']
 
-        detector_scores, weight_scores, desc = self.unet(data)
-        keypoint_coords, keypoint_scores, keypoint_desc = self.keypoint(detector_scores, weight_scores, desc)
+        detector_scores, weight_scores, desc = self.unet(data) # (B*W, 1, 640, 640), (B*W, 3, 640, 640), (B*W, 248, 640, 640)
+        keypoint_coords, keypoint_scores, keypoint_desc = self.keypoint(detector_scores, weight_scores, desc) #(B*W, 400, 2), (B*W, 3, 400), (B*W, 248, 400)
         pseudo_coords, match_weights, tgt_ids, src_ids = self.softmax_matcher(keypoint_scores, keypoint_desc, desc, keypoint_coords)
         keypoint_coords = keypoint_coords[tgt_ids]
 

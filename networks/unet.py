@@ -46,11 +46,11 @@ class UNet(torch.nn.Module):
         """
         _, _, height, width = x.size()
 
-        x1 = self.inc(x)
-        x2 = self.down1(x1)
-        x3 = self.down2(x2)
-        x4 = self.down3(x3)
-        x5 = self.down4(x4)
+        x1 = self.inc(x) #(B*W, 8, 640, 640)
+        x2 = self.down1(x1) #(B*W, 16, 320, 320)
+        x3 = self.down2(x2) #(B*W, 32, 160, 160)
+        x4 = self.down3(x3) #(B*W, 64, 80, 80)
+        x5 = self.down4(x4) #(B*W, 128, 40, 40)
 
         x4_up_pts = self.up1_pts(x5, x4)
         x3_up_pts = self.up2_pts(x4_up_pts, x3)

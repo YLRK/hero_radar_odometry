@@ -18,7 +18,7 @@ torch.backends.cudnn.enabled = True
 torch.backends.cudnn.deterministic = True
 torch.manual_seed(0)
 np.random.seed(0)
-torch.set_num_threads(8)
+# torch.set_num_threads(4)
 torch.multiprocessing.set_sharing_strategy('file_system')
 print(torch.__version__)
 print(torch.version.cuda)
